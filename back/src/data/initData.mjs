@@ -12,7 +12,7 @@ async function fetchPokemons(){
   try {
     const { data: pokemonData } = await axios.get('https://pokeapi.co/api/v2/pokemon', {
       params: {
-        limit: 20,
+        limit: 1,
         offset: 0,
       }
     }) // get count + pagiined pokemons
@@ -40,6 +40,11 @@ async function fetchPokemons(){
 
       const pokemon = await axiosFetcher(url)
       const species = await axiosFetcher(pokemon.species.url)
+
+      const sourceFilePath = path.join(__dirname, '../ressources/fetched_pokemons.json')
+      fs.writeFileSync(sourceFilePath, JSON.stringify({ pokemon }))
+      const source2FilePath = path.join(__dirname, '../ressources/fetched_species.json')
+      fs.writeFileSync(source2FilePath, JSON.stringify({ species }))
 
       // add evolutions
 

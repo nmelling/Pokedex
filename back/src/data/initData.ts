@@ -3,26 +3,18 @@ import _ from 'lodash';
 import path from 'node:path';
 
 import { Pokemon } from '../types/pokemon';
+import { FetchedPokemon } from '../types/apiResponse/pokemons'
+import { FetchedSpecies } from '../types/apiResponse/species'
+ 
 
-interface PokemonResponse {
-  sprites: { [key: string]: string }[];
-  stats: { base_stat: number, stat: { [key: string]: string } }[];
-  types: { type: { [key: string]: string } }[];
-  abilities: { ability: { name: string, url: string } }[];
-}
-
-interface SpecieResponse {
-  names: { language: { [key: string]: string } }[]
-}
-
-function formatPokemonData(pokemon: PokemonResponse, specie: SpecieResponse): Pokemon {
+function formatPokemonData(pokemon: FetchedPokemon, specie: FetchedSpecies): Pokemon {
   const sprites = Object.fromEntries(
     Object.entries(_.pick(pokemon.sprites, ['back_default', 'back_shiny']))
     .map(([key, value]) => ([key.replace('back_', ''), value]))
   )
 
   return {
-    name: specie.names.find(entry => entry.language.name === 'fr').name,
+    name: (specie.names || []).find(entry => entry.language.name === 'fr').name,
     stats: Object.fromEntries(pokemon.stats.map(entry => [entry.stat.name, entry.base_stat])),
     sprites,
     types: pokemon.types.map(entry => entry.type.name),

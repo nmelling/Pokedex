@@ -33,7 +33,7 @@ type Move = {
 type Stat = {
   base_stat: number;
   effort: number;
-  stat: ShortcutItem[];
+  stat: ShortcutItem;
 }
 
 export interface FetchedPokemon {
