@@ -3,7 +3,7 @@ declare global {
   namespace NodeJS {
     interface ProcessEnv {
       PORT: string;
-      INIT_DATA: boolean;
+      // INIT_DATA: boolean;
     }
   }
 }
