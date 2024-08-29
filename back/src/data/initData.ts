@@ -3,10 +3,10 @@ import _ from 'lodash';
 import path from 'node:path';
 import fs from 'node:fs';
 
-import { Pokemon } from '../types/pokemon';
-import { ShortcutItem } from '../types/apiResponse/common';
-import { FetchedPokemon } from '../types/apiResponse/pokemons'
-import { FetchedSpecies } from '../types/apiResponse/species'
+import type { Pokemon } from '../types/pokemon.d.ts';
+import type { ShortcutItem } from '../types/apiResponse/common.d.ts';
+import type { FetchedPokemon } from '../types/apiResponse/pokemons.d.ts'
+import type { FetchedSpecies } from '../types/apiResponse/species.d.ts'
  
 
 function formatPokemonData(pokemon: FetchedPokemon, specie: FetchedSpecies): Pokemon {
