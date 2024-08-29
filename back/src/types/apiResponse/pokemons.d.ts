@@ -39,11 +39,11 @@ type Stat = {
 export interface FetchedPokemon {
   abilities: Ability[];
   base_experience: number;
-  cries: Cry[];
+  cries: Cry;
   forms: ShortcutItem[],
   game_indices: GameIndice[],
   height: number;
-  held_items: [];
+  held_items: any[]; // we are not interessed by this prop for now
   id: number;
   is_default: boolean;
   location_area_encounters: string;

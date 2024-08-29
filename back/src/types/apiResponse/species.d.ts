@@ -42,7 +42,7 @@ export interface FetchedSpecies {
   },
   evolves_from_species: null,
   flavor_text_entries: Flavor[];
-  form_descriptions: [],
+  form_descriptions: any[],
   forms_switchable: boolean;
   gender_rate: number;
   genera: Genera[];
