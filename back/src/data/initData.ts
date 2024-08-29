@@ -9,7 +9,7 @@ import type { FetchedPokemon } from '../types/apiResponse/pokemons.d.ts'
 import type { FetchedSpecies } from '../types/apiResponse/species.d.ts'
  
 
-function formatPokemonData(pokemon: FetchedPokemon, specie: FetchedSpecies): Pokemon {
+export function formatPokemonData(pokemon: FetchedPokemon, specie: FetchedSpecies): Pokemon {
   return {
     name: (specie.names! ?? []).find(entry => entry.language.name === 'fr')?.name || '',
     stats: Object.fromEntries(pokemon.stats.map(entry => [entry.stat.name, entry.base_stat])),
