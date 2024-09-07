@@ -22,41 +22,60 @@ export function formatPokemonData(pokemon: FetchedPokemon, specie: FetchedSpecie
   }
 }
 
-async function axiosFetcher (url: string) {
-  try {
-    const response: AxiosResponse = await axios.get(url);
-    return response.data
-  } catch (err) {
-    console.error(err);
-    throw err;
+export async function fetchPokemons(maxCount: number, batchSize: number): Promise<Pokemon[]> {
+
+  const pokemons: Pokemon[] = [];
+
+  // add some verification to handle maxCount inferior to batchSize
+
+  const batched = new Array(Math.round(maxCount / batchSize))
+  .fill(null)
+  .map((_e, index) => {
+    let limit = batchSize;
+    if (index === (maxCount / batchSize) - 1) limit = maxCount % batchSize
+    return {
+      limit,
+      offset: index,
+    }
+  });
+
+  for (const { limit, offset } of batched) {
+    try {
+      const response: AxiosResponse = await axios.get('https://pokeapi.co/api/v2/pokemon', {
+        params: {
+          limit,
+          offset,
+        }
+      });
+  
+      // chunk some size
+  
+      const formattedPokemons: Pokemon[] = await Promise.all((response.data.results ?? []).map(async (entry: ShortcutItem) => {
+        const { data: pokemon }: AxiosResponse  = await axios.get(entry.url);
+        const { data: species }: AxiosResponse = await axios.get(pokemon.species.url);
+  
+        return formatPokemonData(pokemon, species);
+      }))
+
+      pokemons.push(...formattedPokemons);
+    } catch (err) {
+      console.error(err);
+      throw err;
+    }
+
   }
+  
+  return pokemons;
 }
 
-async function fetchPokemons(): Promise<Pokemon[]> {
-  try {
-    const response: AxiosResponse = await axios.get('https://pokeapi.co/api/v2/pokemon', {
-      params: {
-        limit: 20,
-        offset: 0,
-      }
-    });
+export async function main(): Promise<void> {
+  const pokemons = await fetchPokemons(5, 2)
 
-    return await Promise.all((response.data.results ?? []).map(async (entry: ShortcutItem) => {
-      const pokemon: FetchedPokemon = await axiosFetcher(entry.url)
-      const species: FetchedSpecies = await axiosFetcher(pokemon.species.url)
-
-      return formatPokemonData(pokemon, species)
-    }))
-  } catch (err) {
-    console.error(err);
-    throw err;
+  const sourceFolderPath = path.join(__dirname, '../ressources')
+  const sourceFilePath = path.join(sourceFolderPath, 'pokemons.json')
+  if (!fs.existsSync(sourceFolderPath)) {
+    fs.mkdirSync(sourceFolderPath)
   }
-}
-
-async function main(): Promise<void> {
-  const pokemons = await fetchPokemons()
-
-  const sourceFilePath = path.join(__dirname, '../ressources/pokemons.json')
   fs.writeFileSync(sourceFilePath, JSON.stringify({ pokemons }))
 
   console.log('populated')
