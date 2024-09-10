@@ -27,18 +27,18 @@ export async function fetchPokemons(maxCount: number, batchSize: number): Promis
   const pokemons: Pokemon[] = [];
 
   // add some verification to handle maxCount inferior to batchSize
-  const rounded = Math.round(maxCount / batchSize)
+  const rounded = Math.round(maxCount / batchSize) // arrondi supérieur
 
   const batched = new Array(rounded)
   .fill(null)
-  .map((_e, index) => {
-    let limit = batchSize;
-    if (index === rounded - 1) limit = maxCount % batchSize
-    return {
-      limit,
-      offset: index,
-    }
-  });
+  .map((_entry, index) => {
+    const formatted = {
+      limit: batchSize,
+      offset: index + index,
+    };
+    if (index === rounded - 1) formatted.limit = maxCount - (index * batchSize);
+    return formatted;
+  })
 
   for (const { limit, offset } of batched) {
     try {
@@ -48,8 +48,6 @@ export async function fetchPokemons(maxCount: number, batchSize: number): Promis
           offset,
         }
       });
-  
-      // chunk some size
   
       const formattedPokemons: Pokemon[] = await Promise.all((response.data.results ?? []).map(async (entry: ShortcutItem) => {
         const { data: pokemon }: AxiosResponse  = await axios.get(entry.url);
