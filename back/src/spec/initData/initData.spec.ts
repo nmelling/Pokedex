@@ -39,8 +39,26 @@ describe('format pokemon data', () => {
 
 describe('fetch pokemons', () => {
   it('should return X pokemons formatted as expected', async function() {
+    spyOn(axios, 'get').and.callFake((url: string) => {
+      // moduler le nombre de resultats initiaux en fonction du batcSize passé
+      // (tjr reprendre bulbizarre pour les tests)
+      const mockedResponses = {
+        'https://pokeapi.co/api/v2/pokemon': {
+          data: {
+            results: [
+              { name: 'bulbasaur', url: 'https://pokeapi.co/api/v2/pokemon/1/' }
+            ],
+          },
+        },
+        'https://pokeapi.co/api/v2/pokemon/1/': {
+          data: fetchedPokemon.pokemon,
+        },
+        'https://pokeapi.co/api/v2/pokemon-species/1/': {
+          data: fetchedSpecies.species,
+        },
+      }
+    })
     // mock axios
-    // use fetchPokemons
     const formattedPokemons = await fetchPokemons(5, 2);
     expect(formattedPokemons.length).toEqual(5);
   })

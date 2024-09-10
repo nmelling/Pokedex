@@ -68,16 +68,16 @@ export async function fetchPokemons(maxCount: number, batchSize: number): Promis
 }
 
 export async function main(): Promise<void> {
-  const pokemons = await fetchPokemons(5, 2)
+  const pokemons = await fetchPokemons(5, 2);
 
-  const sourceFolderPath = path.join(__dirname, '../ressources')
-  const sourceFilePath = path.join(sourceFolderPath, 'pokemons.json')
+  const sourceFolderPath = path.join(__dirname, '../ressources');
+  const sourceFilePath = path.join(sourceFolderPath, 'pokemons.json');
   if (!fs.existsSync(sourceFolderPath)) {
-    fs.mkdirSync(sourceFolderPath)
+    fs.mkdirSync(sourceFolderPath);
   }
-  fs.writeFileSync(sourceFilePath, JSON.stringify({ pokemons }))
+  fs.writeFileSync(sourceFilePath, JSON.stringify({ pokemons }));
 
-  console.log('populated')
+  console.log('populated');
 }
 
-main()
+main();
