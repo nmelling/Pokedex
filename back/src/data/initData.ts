@@ -22,12 +22,12 @@ export function formatPokemonData(pokemon: FetchedPokemon, specie: FetchedSpecie
   }
 }
 
-export async function fetchPokemons(maxCount: number, batchSize: number): Promise<Pokemon[]> {
-
+export async function fetchPokemons(maxCount: number, $batchSize: number): Promise<Pokemon[]> {
   const pokemons: Pokemon[] = [];
 
-  // add some verification to handle maxCount inferior to batchSize
-  const rounded = Math.round(maxCount / batchSize) // arrondi supérieur
+  let rounded = 1;
+  let batchSize = Math.min($batchSize, maxCount);
+  if (batchSize < maxCount) rounded = Math.round(maxCount / batchSize);
 
   const batched = new Array(rounded)
   .fill(null)
@@ -38,7 +38,7 @@ export async function fetchPokemons(maxCount: number, batchSize: number): Promis
     };
     if (index === rounded - 1) formatted.limit = maxCount - (index * batchSize);
     return formatted;
-  })
+  });
 
   for (const { limit, offset } of batched) {
     try {
