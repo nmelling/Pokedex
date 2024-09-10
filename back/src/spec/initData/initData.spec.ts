@@ -1,4 +1,7 @@
 import axios from 'axios'
+import type { FetchedPokemon } from '../../types/apiResponse/pokemons'
+import type { FetchedSpecies } from '../../types/apiResponse/species'
+import type { ShortcutItem } from '../../types/apiResponse/common'
 import { formatPokemonData, fetchPokemons } from '../../data/initData';
 import fetchedPokemon from '../../ressources/fetched_pokemons.json';
 import fetchedSpecies from '../../ressources/fetched_species.json';
@@ -35,45 +38,46 @@ describe('format pokemon data', () => {
     expect(formatPokemonData(fetchedPokemon.pokemon, fetchedSpecies.species))
     .toEqual(formattedBulbisaur);
   })
+
+  it('should fail if the fetched pokemon is not formatted as expected', () => {
+    //
+  })
+
+  it('should fail if the fetched specie is not formatted as expected', () => {
+    //
+  })
+
+  it('should fail if some fetched entry is not provided', () => {
+    //
+  })
+  
 });
 
 describe('fetch pokemons', () => {
-  it('should return X pokemons formatted as expected', async function() {
-    spyOn(axios, 'get').and.callFake((url: string) => {
-      // moduler le nombre de resultats initiaux en fonction du batcSize passé
-      // (tjr reprendre bulbizarre pour les tests)
-      const mockedResponses = {
+  it('should return 5 pokemons formatted as expected', async function() {
+    spyOn(axios, 'get').and.callFake(<T>(url: string): Promise<T> => {
+      const mockedResponses: { [key: string]: FetchedPokemon | FetchedSpecies | { results: ShortcutItem[] } } = {
         'https://pokeapi.co/api/v2/pokemon': {
-          data: {
-            results: [
-              { name: 'bulbasaur', url: 'https://pokeapi.co/api/v2/pokemon/1/' }
-            ],
-          },
+          results: new Array(2).fill({ name: 'bulbasaur', url: 'https://pokeapi.co/api/v2/pokemon/1/' }),
         },
-        'https://pokeapi.co/api/v2/pokemon/1/': {
-          data: fetchedPokemon.pokemon,
-        },
-        'https://pokeapi.co/api/v2/pokemon-species/1/': {
-          data: fetchedSpecies.species,
-        },
+        'https://pokeapi.co/api/v2/pokemon/1/': fetchedPokemon.pokemon,
+        'https://pokeapi.co/api/v2/pokemon-species/1/': fetchedSpecies.species,
       }
+
+      return Promise.resolve({ data: mockedResponses[url] } as T);
     })
-    // mock axios
-    const formattedPokemons = await fetchPokemons(5, 2);
-    expect(formattedPokemons.length).toEqual(5);
+
+    const formattedPokemons = await fetchPokemons(6, 2);
+    expect(formattedPokemons.length).toEqual(6);
+    expect(formattedPokemons).toEqual(new Array(6).fill(formattedBulbisaur))
+    expect(axios.get).toHaveBeenCalledTimes(15);
   })
 
-  it('should mock axios', async () => {
-    const mockResponse = { data : { message: 'Hello World'} }
-    spyOn(axios, 'get').and.returnValue(Promise.resolve(mockResponse))
+  it('Should returns the maxCount formatted pokemons if batch size is superior to maxCount arg', () => {
+    //
+  })
 
-    const test = async () => {
-      return await axios.get('blabla')
-    }
-
-    const result = await test()
-
-    expect(axios.get).toHaveBeenCalledTimes(1);
-    expect(result.data).toEqual({ message: 'Hello World'});
+  it('should fail if pagined axios call throws', () => {
+    //
   })
 })
