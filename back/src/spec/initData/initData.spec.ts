@@ -1,3 +1,4 @@
+import axios from 'axios'
 import { formatPokemonData, fetchPokemons } from '../../data/initData';
 import fetchedPokemon from '../../ressources/fetched_pokemons.json';
 import fetchedSpecies from '../../ressources/fetched_species.json';
@@ -41,7 +42,20 @@ describe('fetch pokemons', () => {
     // mock axios
     // use fetchPokemons
     const formattedPokemons = await fetchPokemons(5, 2);
-    console.log('formatted length', formattedPokemons.length)
     expect(formattedPokemons.length).toEqual(5);
+  })
+
+  it('should mock axios', async () => {
+    const mockResponse = { data : { message: 'Hello World'} }
+    spyOn(axios, 'get').and.returnValue(Promise.resolve(mockResponse))
+
+    const test = async () => {
+      return await axios.get('blabla')
+    }
+
+    const result = await test()
+
+    expect(axios.get).toHaveBeenCalledTimes(1);
+    expect(result.data).toEqual({ message: 'Hello World'});
   })
 })
