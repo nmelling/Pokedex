@@ -27,12 +27,13 @@ export async function fetchPokemons(maxCount: number, batchSize: number): Promis
   const pokemons: Pokemon[] = [];
 
   // add some verification to handle maxCount inferior to batchSize
+  const rounded = Math.round(maxCount / batchSize)
 
-  const batched = new Array(Math.round(maxCount / batchSize))
+  const batched = new Array(rounded)
   .fill(null)
   .map((_e, index) => {
     let limit = batchSize;
-    if (index === (maxCount / batchSize) - 1) limit = maxCount % batchSize
+    if (index === rounded - 1) limit = maxCount % batchSize
     return {
       limit,
       offset: index,
