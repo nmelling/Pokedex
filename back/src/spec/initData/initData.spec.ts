@@ -38,20 +38,7 @@ describe('format pokemon data', () => {
   it('should format the provided data correctly', () => {
     expect(formatPokemonData(fetchedPokemon.pokemon, fetchedSpecies.species))
     .toEqual(formattedBulbisaur);
-  })
-
-  it('should fail if the fetched pokemon is not formatted as expected', () => {
-    //
-  })
-
-  it('should fail if the fetched specie is not formatted as expected', () => {
-    //
-  })
-
-  it('should fail if some fetched entry is not provided', () => {
-    //
-  })
-  
+  });
 });
 
 function generateMockResponses (resultNumber: number): { [key: string]: FetchedPokemon | FetchedSpecies | { results: ShortcutItem[] } } {
@@ -62,7 +49,7 @@ function generateMockResponses (resultNumber: number): { [key: string]: FetchedP
     'https://pokeapi.co/api/v2/pokemon/1/': fetchedPokemon.pokemon,
     'https://pokeapi.co/api/v2/pokemon-species/1/': fetchedSpecies.species,
   }
-}
+};
 
 describe('fetch pokemons', () => {
   it('should return the <maxCount> pokemons formatted as expected', async function() {
@@ -76,7 +63,7 @@ describe('fetch pokemons', () => {
     expect(formattedPokemons.length).toEqual(6);
     expect(formattedPokemons).toEqual(new Array(6).fill(formattedBulbisaur))
     expect(axios.get).toHaveBeenCalledTimes(15);
-  })
+  });
 
   it('Should returns the <maxCount> formatted pokemons if batch size is superior to maxCount arg', async () => {
     const mockedResponses = generateMockResponses(6);
@@ -89,7 +76,7 @@ describe('fetch pokemons', () => {
     expect(formattedPokemons.length).toEqual(6);
     expect(formattedPokemons).toEqual(new Array(6).fill(formattedBulbisaur));
     expect(axios.get).toHaveBeenCalledTimes(13);
-  })
+  });
 
   it('should fail if pagined axios call throws', async () => {
     spyOn(axios, 'get').and.callFake(<T>(_url: string): Promise<T> => {
@@ -110,5 +97,5 @@ describe('fetch pokemons', () => {
     }
     expect(formattedPokemons.length).toEqual(0);
     expect(axios.get).toHaveBeenCalledTimes(1);
-  })
+  });
 })
