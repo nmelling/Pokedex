@@ -1,33 +1,33 @@
-import { ShortcutItem } from './common'
+import { ShortcutItem } from './common';
 
-type Flavor = {
+interface Flavor {
   flavor_text: string;
   language: ShortcutItem;
   version: ShortcutItem;
 }
 
-type Genera = {
+interface Genera {
   genus: string;
   language: ShortcutItem;
 }
 
-type Name = {
+interface Name {
   language: ShortcutItem;
   name: string;
 }
 
-type PalParkEncounter = {
+interface PalParkEncounter {
   area: ShortcutItem;
   base_score: number;
   rate: number;
 }
 
-type PokedexNumber= {
+interface PokedexNumber {
   entry_number: number;
   pokedex: ShortcutItem;
 }
 
-type Variety = {
+interface Variety {
   is_default: boolean;
   pokemon: ShortcutItem;
 }
@@ -39,10 +39,10 @@ export interface FetchedSpecies {
   egg_groups: ShortcutItem[];
   evolution_chain: {
     url: string;
-  },
-  evolves_from_species: null,
+  };
+  evolves_from_species: null;
   flavor_text_entries: Flavor[];
-  form_descriptions: any[],
+  form_descriptions: ShortcutItem[];
   forms_switchable: boolean;
   gender_rate: number;
   genera: Genera[];

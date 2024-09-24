@@ -5,8 +5,8 @@ interface Ability {
 
 export interface Pokemon {
   name: string;
-  stats: { [key: string]: number };
-  sprites: { [key: string]: string | null };
+  stats: Record<string, number>;
+  sprites: Record<string, string | null>;
   types: string[];
   abilities: Ability[];
 }
