@@ -55,7 +55,7 @@ function generateMockResponses(
       results: new Array(resultNumber).fill({
         name: 'bulbasaur',
         url: 'https://pokeapi.co/api/v2/pokemon/1/',
-      }),
+      }) as ShortcutItem[],
     },
     'https://pokeapi.co/api/v2/pokemon/1/': fetchedPokemon.pokemon,
     'https://pokeapi.co/api/v2/pokemon-species/1/': fetchedSpecies.species,
@@ -90,12 +90,10 @@ describe('fetch pokemons', () => {
   });
 
   it('should fail if pagined axios call throws', async () => {
-    spyOn(axios, 'get').and.callFake(<T>(_url: string): Promise<T> => {
-      const error: Partial<AxiosError> = {
-        message: 'Network error',
-        code: '',
-        response: undefined,
-      };
+    spyOn(axios, 'get').and.callFake(<T>(): Promise<T> => {
+      const error = new Error('Network error') as Partial<AxiosError>;
+      error.code = '';
+      error.response = undefined;
 
       return Promise.reject(error);
     });
