@@ -1,11 +1,9 @@
 import axios, { AxiosResponse } from 'axios';
-import path from 'node:path';
-import fs from 'node:fs';
 
-import type { Pokemon } from '../types/pokemon.d.ts';
-import type { ShortcutItem } from '../types/apiResponse/common.d.ts';
-import type { FetchedPokemon } from '../types/apiResponse/pokemons.d.ts';
-import type { FetchedSpecies } from '../types/apiResponse/species.d.ts';
+import type { Pokemon } from '../types/pokemon.js';
+import type { ShortcutItem } from '../types/apiResponse/common.js';
+import type { FetchedPokemon } from '../types/apiResponse/pokemons.js';
+import type { FetchedSpecies } from '../types/apiResponse/species.js';
 
 export function formatPokemonData(
   pokemon: FetchedPokemon,
@@ -77,18 +75,3 @@ export async function fetchPokemons(
 
   return pokemons;
 }
-
-export async function main(): Promise<void> {
-  const pokemons = await fetchPokemons(5, 2);
-
-  const sourceFolderPath = path.join(__dirname, '../ressources');
-  const sourceFilePath = path.join(sourceFolderPath, 'pokemons.json');
-  if (!fs.existsSync(sourceFolderPath)) {
-    fs.mkdirSync(sourceFolderPath);
-  }
-  fs.writeFileSync(sourceFilePath, JSON.stringify({ pokemons }));
-
-  console.log('populated');
-}
-
-main();

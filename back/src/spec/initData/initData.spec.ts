@@ -3,7 +3,10 @@ import type { FetchedPokemon } from '../../types/apiResponse/pokemons';
 import type { FetchedSpecies } from '../../types/apiResponse/species';
 import type { ShortcutItem } from '../../types/apiResponse/common';
 import type { Pokemon } from '../../types/pokemon';
-import { formatPokemonData, fetchPokemons } from '../../data/initData';
+import {
+  formatPokemonData,
+  fetchPokemons,
+} from '../../data/fetchAndFormatData';
 import fetchedPokemon from '../../ressources/fetched_pokemons.json';
 import fetchedSpecies from '../../ressources/fetched_species.json';
 
