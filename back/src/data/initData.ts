@@ -1,5 +1,4 @@
 import axios, { AxiosResponse } from 'axios';
-import _ from 'lodash';
 import path from 'node:path';
 import fs from 'node:fs';
 
@@ -14,8 +13,7 @@ export function formatPokemonData(
 ): Pokemon {
   return {
     name:
-      (specie.names ?? []).find((entry) => entry.language.name === 'fr')
-        ?.name || '',
+      specie.names.find((entry) => entry.language.name === 'fr')?.name ?? '',
     stats: Object.fromEntries(
       pokemon.stats.map((entry) => [entry.stat.name, entry.base_stat]),
     ),
@@ -49,25 +47,25 @@ export async function fetchPokemons(
 
   for (const { limit, offset } of batched) {
     try {
-      const response: AxiosResponse = await axios.get(
-        'https://pokeapi.co/api/v2/pokemon',
-        {
+      const response: AxiosResponse<{ results: ShortcutItem[] }> =
+        await axios.get('https://pokeapi.co/api/v2/pokemon', {
           params: {
             limit,
             offset,
           },
-        },
-      );
+        });
 
-      const formattedPokemons: Pokemon[] = await Promise.all(
-        (response.data.results ?? []).map(async (entry: ShortcutItem) => {
-          const { data: pokemon }: AxiosResponse = await axios.get(entry.url);
-          const { data: species }: AxiosResponse = await axios.get(
-            pokemon.species.url,
-          );
+      const formattedPokemons = await Promise.all(
+        response.data.results.map(
+          async (entry: ShortcutItem): Promise<Pokemon> => {
+            const { data: pokemon }: AxiosResponse<FetchedPokemon> =
+              await axios.get(entry.url);
+            const { data: species }: AxiosResponse<FetchedSpecies> =
+              await axios.get(pokemon.species.url);
 
-          return formatPokemonData(pokemon, species);
-        }),
+            return formatPokemonData(pokemon, species);
+          },
+        ),
       );
 
       pokemons.push(...formattedPokemons);
