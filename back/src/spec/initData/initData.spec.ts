@@ -73,6 +73,7 @@ describe('fetch pokemons', () => {
     const formattedPokemons = await fetchPokemons(6, 2);
     expect(formattedPokemons.length).toEqual(6);
     expect(formattedPokemons).toEqual(new Array(6).fill(formattedBulbisaur));
+    // eslint-disable-next-line @typescript-eslint/unbound-method
     expect(axios.get).toHaveBeenCalledTimes(15);
   });
 
@@ -86,12 +87,13 @@ describe('fetch pokemons', () => {
     const formattedPokemons = await fetchPokemons(6, 10);
     expect(formattedPokemons.length).toEqual(6);
     expect(formattedPokemons).toEqual(new Array(6).fill(formattedBulbisaur));
+    // eslint-disable-next-line @typescript-eslint/unbound-method
     expect(axios.get).toHaveBeenCalledTimes(13);
   });
 
   it('should fail if pagined axios call throws', async () => {
     spyOn(axios, 'get').and.callFake(<T>(): Promise<T> => {
-      const error = new Error('Network error') as Partial<AxiosError>;
+      const error = new Error('Network error') as AxiosError;
       error.code = '';
       error.response = undefined;
 
@@ -101,10 +103,15 @@ describe('fetch pokemons', () => {
     let formattedPokemons: Pokemon[] = [];
     try {
       formattedPokemons = await fetchPokemons(5, 2);
-    } catch (err: any) {
-      expect(err.message).toEqual('Network error');
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        expect(err.message).toEqual('Network error');
+      } else {
+        throw new Error('Unexpected error type');
+      }
     }
     expect(formattedPokemons.length).toEqual(0);
+    // eslint-disable-next-line @typescript-eslint/unbound-method
     expect(axios.get).toHaveBeenCalledTimes(1);
   });
 });
