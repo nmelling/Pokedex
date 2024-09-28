@@ -75,3 +75,5 @@ export async function fetchPokemons(
 
   return pokemons;
 }
+
+// Later, will need to fetch type weaknesses
