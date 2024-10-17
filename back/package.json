@@ -5,7 +5,9 @@
   "main": "main.js",
   "scripts": {
     "test": "ts-node --project ./tsconfig.json node_modules/jasmine/bin/jasmine --config=./src/spec/support/jasmine.json",
-    "start": "tsc && node dist/main.js"
+    "start": "tsc && node dist/main.js",
+    "typeorm": "typeorm-ts-node-commonjs",
+    "typeorm:migrate": "typeorm-ts-node-commonjs migration:run -d src/data/appDataSource.ts"
   },
   "author": "",
   "license": "ISC",

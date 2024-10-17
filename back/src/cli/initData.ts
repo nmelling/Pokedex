@@ -1,8 +1,7 @@
 import 'reflect-metadata';
-import path from 'node:path';
-import { DataSource } from 'typeorm';
 import { Command } from 'commander';
 
+import AppDataSource from '../data/appDataSource';
 import { version } from '../../package.json';
 import { fetchPokemons } from '../data/fetchAndFormatData';
 
@@ -17,18 +16,9 @@ program
   .command('init_database')
   .description('Check if database exists & run the migrations')
   .action(async () => {
-    const AppDataSource = new DataSource({
-      type: 'better-sqlite3',
-      database: path.join(__dirname, '../../var/pokemon.sqlite'),
-      synchronize: true,
-      logging: false,
-      entities: [__dirname + '../data/entity/*.ts'],
-      // migrations: [],
-      // subscribers: [],
-    });
-
     try {
       await AppDataSource.initialize();
+      await AppDataSource.runMigrations();
     } catch (err) {
       if (err instanceof Error)
         console.error(`Initialization database error : ${err.message}`);

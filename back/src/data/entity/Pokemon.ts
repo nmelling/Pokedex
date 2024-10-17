@@ -1,18 +1,22 @@
-import { Entity, PrimaryColumn, Column } from 'typeorm';
+import {
+  Entity,
+  PrimaryColumn,
+  PrimaryGeneratedColumn,
+  Column,
+  OneToOne,
+  JoinColumn,
+  ManyToMany,
+  JoinTable,
+} from 'typeorm';
 
-@Entity()
-export class Pokemon {
-  @PrimaryColumn()
-  id!: number;
-
-  @Column()
-  name!: string;
-}
+import { Ability } from './Ability';
+import { Type } from './Type';
 
 @Entity()
 export class Stat {
-  @PrimaryColumn()
-  pokemonId!: number;
+  @PrimaryGeneratedColumn()
+  id!: number;
+
   @Column()
   hp!: number;
   @Column()
@@ -25,4 +29,25 @@ export class Stat {
   'special-defense'!: number;
   @Column()
   speed!: number;
+}
+
+@Entity()
+export class Pokemon {
+  @PrimaryColumn()
+  id!: number;
+
+  @Column()
+  name!: string;
+
+  @OneToOne(() => Stat)
+  @JoinColumn()
+  stats!: Stat;
+
+  @ManyToMany(() => Ability)
+  @JoinTable()
+  abilities!: Ability[];
+
+  @ManyToMany(() => Type, (type) => type.pokemons)
+  @JoinTable()
+  types!: Type[];
 }
